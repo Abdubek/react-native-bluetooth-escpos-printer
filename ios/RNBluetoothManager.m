@@ -17,6 +17,8 @@ NSString *EVENT_DEVICE_FOUND = @"EVENT_DEVICE_FOUND";
 NSString *EVENT_CONNECTION_LOST = @"EVENT_CONNECTION_LOST";
 NSString *EVENT_UNABLE_CONNECT=@"EVENT_UNABLE_CONNECT";
 NSString *EVENT_CONNECTED=@"EVENT_CONNECTED";
+NSString *EVENT_BLUETOOTH_READY=@"EVENT_BLUETOOTH_READY";
+
 static NSArray<CBUUID *> *supportServices = nil;
 static NSDictionary *writeableCharactiscs = nil;
 bool hasListeners;
@@ -62,7 +64,7 @@ static NSTimer *timer;
  **/
 - (NSDictionary *)constantsToExport
 {
-    
+
     /*
      EVENT_DEVICE_ALREADY_PAIRED    Emits the devices array already paired
      EVENT_DEVICE_DISCOVER_DONE    Emits when the scan done
@@ -77,7 +79,8 @@ static NSTimer *timer;
               EVENT_DEVICE_FOUND:EVENT_DEVICE_FOUND,
               EVENT_CONNECTION_LOST:EVENT_CONNECTION_LOST,
               EVENT_UNABLE_CONNECT:EVENT_UNABLE_CONNECT,
-              EVENT_CONNECTED:EVENT_CONNECTED
+              EVENT_CONNECTED:EVENT_CONNECTED,
+              EVENT_BLUETOOTH_READY:EVENT_BLUETOOTH_READY
               };
 }
 - (dispatch_queue_t)methodQueue
@@ -100,7 +103,8 @@ static NSTimer *timer;
              EVENT_UNABLE_CONNECT,
              EVENT_CONNECTION_LOST,
              EVENT_CONNECTED,
-             EVENT_DEVICE_ALREADY_PAIRED];
+             EVENT_DEVICE_ALREADY_PAIRED,
+             EVENT_BLUETOOTH_READY];
 }
 
 
@@ -161,7 +165,7 @@ RCT_EXPORT_METHOD(scanDevices:(RCTPromiseResolveBlock)resolve
             timer = nil;
         }
         timer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(callStop) userInfo:nil repeats:NO];
-    
+
     }
     @catch(NSException *exception){
         NSLog(@"ERROR IN STARTING SCANE %@",exception);
@@ -285,6 +289,7 @@ RCT_EXPORT_METHOD(connect:(NSString *)address
  **/
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central{
     NSLog(@"%ld",(long)central.state);
+    [self sendEventWithName:EVENT_BLUETOOTH_READY body:nil];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI{
@@ -383,7 +388,7 @@ RCT_EXPORT_METHOD(connect:(NSString *)address
          NSLog(@"服务id：%@",service.UUID.UUIDString);
     }
     NSLog(@"开始扫描外设服务的特征 %@...",peripheral.name);
-    
+
     if(error && self.connectRejectBlock){
         RCTPromiseRejectBlock rjBlock = self.connectRejectBlock;
          rjBlock(@"",@"",error);
@@ -438,15 +443,15 @@ RCT_EXPORT_METHOD(connect:(NSString *)address
                 }
             }
         }
-        
-        
+
+
     }
-    
+
     if(error){
         NSLog(@"Discrover charactoreristics error:%@",error);
         return;
     }
-    
+
 //    ServiceUUID：49535343-fe7d-4ae5-8fa9-9fafd205e455；
 //    写的是
 //characteristicUUID:49535343-8841-43f4-a8d4-ecbe34729bb3；
@@ -462,8 +467,8 @@ RCT_EXPORT_METHOD(connect:(NSString *)address
 //    };
 //    param = JSON.stringify(param);
 //    uexBluetoothLE.setCharacteristicNotification(param);
-    
-    
+
+
     /** TESTING NSLOG OUTPUT:: ***/
 //    2018-10-01 21:29:24.136033+0800 bluetoothEscposPrinterExamples[8239:4598148] Trying to connect....D7D39238-EF56-71A7-7DCC-D464EFD3BFF1
 //    2018-10-01 21:29:24.302880+0800 bluetoothEscposPrinterExamples[8239:4598148] did connected: <CBPeripheral: 0x1c4302d90, identifier = D7D39238-EF56-71A7-7DCC-D464EFD3BFF1, name = BlueTooth Printer, state = connected>
@@ -500,7 +505,7 @@ RCT_EXPORT_METHOD(connect:(NSString *)address
 //    2018-10-01 21:29:24.433973+0800 bluetoothEscposPrinterExamples[8239:4598148] Notify
 //    2018-10-01 21:29:24.434378+0800 bluetoothEscposPrinterExamples[8239:4598148] Indicate
 //    2018-10-01 21:29:24.434389+0800 bluetoothEscposPrinterExamples[8239:4598148] known properties: 62
-    
+
 //    for(CBCharacteristic *cc in service.characteristics){
 //       // NSLog(@"Characterstic found: %@ in service: %@" ,cc,service.UUID.UUIDString);
 //        CBCharacteristicProperties pro = cc.properties;
@@ -561,11 +566,11 @@ RCT_EXPORT_METHOD(connect:(NSString *)address
             [writeDataDelegate didWriteDataToBle:false];
         }
     }
-    
+
     NSLog(@"Write bluetooth success.");
     if(writeDataDelegate){
         [writeDataDelegate didWriteDataToBle:true];
     }
 }
- 
+
 @end
