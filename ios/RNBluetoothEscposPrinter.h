@@ -1,6 +1,6 @@
 
 #import <React/RCTBridgeModule.h>
-#import "RNBluetoothManager.h";
+#import "RNBluetoothManagerPrinter.h";
 
 @interface RNBluetoothEscposPrinter : NSObject <RCTBridgeModule,WriteDataToBleDelegate>
 
@@ -13,4 +13,4 @@
          fontType:(NSInteger) fontType
          delegate:(NSObject<WriteDataToBleDelegate> *) delegate;
 @end
-  
+

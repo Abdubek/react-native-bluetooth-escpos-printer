@@ -26,7 +26,7 @@
             initPrinter[2]=0;
             initPrinter[3]=13;
             initPrinter[4]=10;
-            [RNBluetoothManager writeValue:[NSData dataWithBytes:initPrinter length:5] withDelegate:self];
+            [RNBluetoothManagerPrinter writeValue:[NSData dataWithBytes:initPrinter length:5] withDelegate:self];
             _now = -1;
             [NSThread sleepForTimeInterval:0.01f];
         }else {
@@ -36,7 +36,7 @@
         _pendingReject(@"PRINT_IMAGE_FAILED",@"PRINT_IMAGE_FAILED",nil);
         _pendingReject = nil;
     }
-    
+
 }
 
 -(void) print
@@ -50,11 +50,11 @@
        // if(sizePerLine>0){
             NSData *subData = [_toPrint subdataWithRange:NSMakeRange(_now, sizePerLine)];
             NSLog(@"Write data:%@",subData);
-            [RNBluetoothManager writeValue:subData withDelegate:self];
+            [RNBluetoothManagerPrinter writeValue:subData withDelegate:self];
         //}
         _now = _now+sizePerLine;
         [NSThread sleepForTimeInterval:0.01f];
-        
+
     }
     //}while(_now<[_toPrint length]);
 }

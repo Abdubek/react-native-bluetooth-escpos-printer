@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RNBluetoothManager.h"
+#import "RNBluetoothManagerPrinter.h"
 #import <CoreBluetooth/CoreBluetooth.h>
-@implementation RNBluetoothManager
+@implementation RNBluetoothManagerPrinter
 
 NSString *EVENT_DEVICE_ALREADY_PAIRED = @"EVENT_DEVICE_ALREADY_PAIRED";
 NSString *EVENT_DEVICE_DISCOVER_DONE = @"EVENT_DEVICE_DISCOVER_DONE";
@@ -23,7 +23,7 @@ static NSArray<CBUUID *> *supportServices = nil;
 static NSDictionary *writeableCharactiscs = nil;
 bool hasListeners;
 static CBPeripheral *connected;
-static RNBluetoothManager *instance;
+static RNBluetoothManagerPrinter *instance;
 static NSObject<WriteDataToBleDelegate> *writeDataDelegate;// delegate of write data resule;
 static NSData *toWrite;
 static NSTimer *timer;

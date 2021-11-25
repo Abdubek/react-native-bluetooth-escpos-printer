@@ -1,5 +1,5 @@
 //
-//  RNBluetoothManager.h
+//  RNBluetoothManagerPrinter.h
 //  RNBluetoothEscposPrinter
 //
 //  Created by januslo on 2018/9/28.
@@ -14,7 +14,7 @@
 - (void) didWriteDataToBle: (BOOL)success;
 @end
 
-@interface RNBluetoothManager <CBCentralManagerDelegate,CBPeripheralDelegate> : RCTEventEmitter <RCTBridgeModule>
+@interface RNBluetoothManagerPrinter <CBCentralManagerDelegate,CBPeripheralDelegate> : RCTEventEmitter <RCTBridgeModule>
 @property (strong, nonatomic) CBCentralManager      *centralManager;
 @property (nonatomic,copy) RCTPromiseResolveBlock scanResolveBlock;
 @property (nonatomic,copy) RCTPromiseRejectBlock scanRejectBlock;
