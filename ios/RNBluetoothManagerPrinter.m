@@ -219,7 +219,14 @@ RCT_EXPORT_METHOD(connect:(NSString *)address
     }
 }
 //unpaire(address)
-
+RCT_EXPORT_METHOD(disconnect:(NSString *)address
+                  findEventsWithResolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if(connected){
+        [self.centralManager cancelPeripheralConnection:connected];
+    }
+}
 
 -(void)callStop{
     if(self.centralManager.isScanning){
