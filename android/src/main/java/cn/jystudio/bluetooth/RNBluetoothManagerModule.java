@@ -142,6 +142,13 @@ public class RNBluetoothManagerModule extends ReactContextBaseJavaModule
             promiseMap.put(PROMISE_ENABLE_BT, promise);
             this.reactContext.startActivityForResult(enableIntent, REQUEST_ENABLE_BT, Bundle.EMPTY);
         } else {
+            int permissionChecked = ContextCompat.checkSelfPermission(reactContext, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+            if (permissionChecked == PackageManager.PERMISSION_DENIED) {
+                // // TODO: 2018/9/21
+                ActivityCompat.requestPermissions(reactContext.getCurrentActivity(),
+                        new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                        1);
+            }
             WritableArray pairedDeivce =Arguments.createArray();
             Set<BluetoothDevice> boundDevices = adapter.getBondedDevices();
             for (BluetoothDevice d : boundDevices) {
